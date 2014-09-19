@@ -16,8 +16,8 @@ var openCV = new cv.ImageStream();
 pngStream.pipe(openCV);
 
 var ready = false;
-var lowerThreshold = [0, 0, 30];
-var upperThreshold = [50, 50, 255];
+var lowerThreshold = [110, 50, 50];
+var upperThreshold = [130, 255, 255];
 
 openCV.on('data', function (matrix) {
     if (!ready) {
@@ -25,7 +25,10 @@ openCV.on('data', function (matrix) {
         ready = true;
     }
     matrix.save('web/original.jpg');
+
+    matrix.convertHSVscale();
     matrix.inRange(lowerThreshold, upperThreshold);
+
     matrix.save('web/processed.jpg');
 });
 
