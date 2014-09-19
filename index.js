@@ -1,4 +1,5 @@
 /* Copyright (C) 2014 Uri Shaked. License: MIT */
+'use strict';
 
 var arDrone = require('ar-drone');
 var express = require('express');
