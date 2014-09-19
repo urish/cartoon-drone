@@ -3,6 +3,8 @@
 
 var arDrone = require('ar-drone');
 var express = require('express');
+var cv = require('opencv');
+var fs = require('fs');
 
 var app = express();
 app.use(express.static('web'));
@@ -18,9 +20,15 @@ pngStream.on('data', function (buffer) {
     lastImage = buffer;
 });
 
-app.get('/image.png', function(req, res) {
+app.get('/image.png', function (req, res) {
     if (lastImage) {
-        res.write(lastImage);
+        cv.readImage(lastImage, function (err, im) {
+            im.convertGrayscale()
+            im.save('temp.jpg');
+            res.write(fs.readFileSync('temp.jpg'));
+            res.end();
+        });
+    } else {
+        res.end();
     }
-    res.end();
 });
