@@ -16,8 +16,8 @@ var openCV = new cv.ImageStream();
 pngStream.pipe(openCV);
 
 var ready = false;
-var lowerThreshold = [110, 50, 50];
-var upperThreshold = [130, 255, 255];
+var lowerThreshold = [53, 50, 50];
+var upperThreshold = [90, 255, 255];
 
 var feedback = false;
 var feedbackWait = false;
