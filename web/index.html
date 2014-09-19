@@ -2,12 +2,16 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Hello Drone</title>
-		<script src="viewer.js?v=2"></script>
+        <script src="lib/angular.min.js"></script>
+		<script src="viewer.js"></script>
 	</head>
-	<body>
-		<div id="main">
+	<body ng-app="droneUI" ng-controller="DroneClientCtrl">
+		<div>
 			<img src="image.png" id="imageOriginal">
             <img src="original.png" id="imageProcessed">
 		</div>
+
+        <button ng-click="takeoff()">Take off</button>
+        <button ng-click="land()">Land</button>
 	</body>
 </html>

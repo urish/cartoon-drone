@@ -54,3 +54,14 @@ openCV.on('data', function (matrix) {
     matrix.save('web/processed.jpg');
 });
 
+app.get('/drone/takeoff', function (req, res) {
+    client.takeoff();
+    res.end();
+});
+
+app.get('/drone/land', function () {
+    client.land();
+    res.end();
+});
+
+client.createRepl();
