@@ -5,6 +5,7 @@
 	var i = 0;
 
 	setInterval(function () {
-		document.getElementById('image1').src = '/image.png?t=' + i++;
+		document.getElementById('imageOriginal').src = '/original.jpg?t=' + i++;
+        document.getElementById('imageProcessed').src = '/processed.jpg?t=' + i++;
 	}, 100);
 })();

@@ -4,7 +4,6 @@
 var arDrone = require('ar-drone');
 var express = require('express');
 var cv = require('opencv');
-var fs = require('fs');
 
 var app = express();
 app.use(express.static('web'));
@@ -12,23 +11,21 @@ app.listen(9222);
 
 var client = arDrone.createClient();
 var pngStream = client.getPngStream();
-var lastImage = null;
-pngStream.on('data', function (buffer) {
-    if (!lastImage) {
+
+var openCV = new cv.ImageStream();
+pngStream.pipe(openCV);
+
+var ready = false;
+var lowerThreshold = [0, 0, 30];
+var upperThreshold = [50, 50, 255];
+
+openCV.on('data', function (matrix) {
+    if (!ready) {
         console.log('ready!');
+        ready = true;
     }
-    lastImage = buffer;
+    matrix.save('web/original.jpg');
+    matrix.inRange(lowerThreshold, upperThreshold);
+    matrix.save('web/processed.jpg');
 });
 
-app.get('/image.png', function (req, res) {
-    if (lastImage) {
-        cv.readImage(lastImage, function (err, im) {
-            im.convertGrayscale()
-            im.save('temp.jpg');
-            res.write(fs.readFileSync('temp.jpg'));
-            res.end();
-        });
-    } else {
-        res.end();
-    }
-});
