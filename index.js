@@ -45,8 +45,10 @@ openCV.on('data', function (matrix) {
         [0, 255, 0],
         [0, 0, 255]
     ];
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < Math.min(3, contourLengths.length); i++) {
+        var rect = contours.boundingRect(contourLengths[i][1]);
         matrix.drawContour(contours, contourLengths[i][1], colors[i]);
+        matrix.rectangle([rect.x, rect.y], [rect.width, rect.height], colors[i], 3);
     }
 
     matrix.save('web/processed.jpg');
