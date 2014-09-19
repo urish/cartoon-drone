@@ -28,4 +28,8 @@ angular.module('droneUI', []).
         $scope.clockwise = function () {
             $http.get('/drone/clockwise');
         };
+
+        $scope.stars = function () {
+            $http.get('/drone/stars');
+        };
     });
