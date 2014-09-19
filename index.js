@@ -64,4 +64,14 @@ app.get('/drone/land', function () {
     res.end();
 });
 
+app.get('/drone/stop', function () {
+    client.stop();
+    res.end();
+});
+
+app.get('/drone/clockwise', function () {
+    client.clockwise(0.5);
+    res.end();
+});
+
 client.createRepl();
