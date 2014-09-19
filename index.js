@@ -29,6 +29,26 @@ openCV.on('data', function (matrix) {
     matrix.convertHSVscale();
     matrix.inRange(lowerThreshold, upperThreshold);
 
+    var cloned = matrix.clone();
+    var contours = cloned.findContours();
+    var contourLengths = [];
+    for (var i = 0; i < contours.size(); i++) {
+        contourLengths.push([contours.arcLength(i, true), i]);
+    }
+    contourLengths.sort(function (left, right) {
+        return right[0] - left[0];
+    });
+
+    matrix.cvtColor('CV_GRAY2BGR');
+    var colors = [
+        [255, 0, 0],
+        [0, 255, 0],
+        [0, 0, 255]
+    ];
+    for (i = 0; i < 3; i++) {
+        matrix.drawContour(contours, contourLengths[i][1], colors[i]);
+    }
+
     matrix.save('web/processed.jpg');
 });
 
