@@ -13,32 +13,12 @@
 
 angular.module('droneUI', []).
     controller('DroneClientCtrl', function ($scope, $http, $interval) {
-        $scope.takeoff = function () {
-            $http.get('/drone/takeoff');
+        $scope.droneControl = function (cmd) {
+            $http.get('/drone/' + cmd);
         };
 
-        $scope.land = function () {
-            $http.get('/drone/land');
-        };
-
-        $scope.stop = function () {
-            $http.get('/drone/stop');
-        };
-
-        $scope.clockwise = function () {
-            $http.get('/drone/clockwise');
-        };
-
-        $scope.up = function () {
-            $http.get('/drone/up');
-        };
-
-        $scope.cloud = function () {
-            $http.get('/drone/cloud');
-        };
-
-        $interval(function() {
-            $http.get('/drone/feedbackDirection').success(function(result) {
+        $interval(function () {
+            $http.get('/drone/feedbackDirection').success(function (result) {
                 $scope.feedbackDirection = result;
             });
         }, 100);

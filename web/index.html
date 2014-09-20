@@ -11,12 +11,23 @@
             <img src="original.png" id="imageProcessed">
 		</div>
 
-        <button ng-click="takeoff()">Take off</button>
-        <button ng-click="land()">Land</button>
-        <button ng-click="stop()">Stop</button>
-        <button ng-click="clockwise()">Rotate</button>
-        <button ng-click="up()">Up</button>
-        <button ng-click="cloud()">Cloud Demo</button>
+        <div>
+            <button ng-click="droneControl('takeoff')">Take off</button>
+            <button ng-click="droneControl('land')">Land</button>
+            <button ng-click="droneControl('stop')">Stop</button>
+            <button ng-click="droneControl('closewise')">Rotate</button>
+            <button ng-click="droneControl('up');">&uarr;</button>
+            <button ng-click="droneControl('down');">&darr;</button>
+            <button ng-click="droneControl('left');">&larr;</button>
+            <button ng-click="droneControl('right');">&rarr;</button>
+            <button ng-click="droneControl('front');">Front</button>
+            <button ng-click="droneControl('back');">Back</button>
+        </div>
+
+        <div>
+            <button ng-click="droneControl('cloud')">Cloud Demo</button>
+            <button ng-click="droneControl('square')">Sqaure</button>
+        </div>
 
         <div>Direction: {{feedbackDirection}}</div>
 	</body>

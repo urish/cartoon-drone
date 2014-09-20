@@ -23,6 +23,8 @@ var feedback = false;
 var feedbackWait = false;
 var feedbackDirection = '';
 
+var squareInterval = null;
+
 openCV.on('data', function (matrix) {
     if (!ready) {
         console.log('ready!');
@@ -73,21 +75,21 @@ function cloudFeedback(rect) {
     feedbackDirection = '';
 
     if (deltaY > 10) {
-        client.front(errorY/factor);
+        client.front(errorY / factor);
         feedbackDirection = ' front';
     }
     if (deltaY < -10) {
-        client.back(errorY/factor);
+        client.back(errorY / factor);
         feedbackDirection += ' back';
     }
 
     if (deltaX > 10) {
-        client.left(errorX/factor);
+        client.left(errorX / factor);
         feedbackDirection += ' left';
     }
 
     if (deltaX < -10) {
-        client.right(errorX/factor);
+        client.right(errorX / factor);
         feedbackDirection += ' right';
     }
 
@@ -126,14 +128,33 @@ app.get('/drone/takeoff', function (req, res) {
     res.end();
 });
 
-app.get('/drone/land', function (req, res) {
+function cleanup() {
     feedback = false;
+    if (squareInterval) {
+        clearInterval(squareInterval);
+        squareInterval = null;
+    }
+}
+
+function startSquare() {
+    cleanup();
+    var index = 0;
+    var directions = ['right', 'front', 'left', 'back'];
+    squareInterval = setInterval(function () {
+        var direction = directions[index % directions.length];
+        client[direction].apply(client, 0.5);
+        index++;
+    }, 1000);
+}
+
+app.get('/drone/land', function (req, res) {
+    cleanup();
     client.land();
     res.end();
 });
 
 app.get('/drone/stop', function (req, res) {
-    feedback = false;
+    cleanup();
     client.stop();
     res.end();
 });
@@ -148,8 +169,33 @@ app.get('/drone/up', function (req, res) {
     res.end();
 });
 
+app.get('/drone/left', function (req, res) {
+    client.left(0.2);
+    res.end();
+});
+
+app.get('/drone/right', function (req, res) {
+    client.right(0.2);
+    res.end();
+});
+
+app.get('/drone/front', function (req, res) {
+    client.front(0.2);
+    res.end();
+});
+
+app.get('/drone/back', function (req, res) {
+    client.back(0.2);
+    res.end();
+});
+
 app.get('/drone/cloud', function (req, res) {
     feedback = true;
+    res.end();
+});
+
+app.get('/drone/square', function (req, res) {
+    startSquare();
     res.end();
 });
 
