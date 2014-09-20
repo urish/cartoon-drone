@@ -56,7 +56,7 @@ openCV.on('data', function (matrix) {
         matrix.drawContour(contours, contourLengths[i][1], colors[i]);
         matrix.rectangle([rect.x, rect.y], [rect.width, rect.height], colors[i], 3);
     }
-    if (feedback && !feedbackWait) {
+    if (feedback && !feedbackWait && contourLengths.length > 0)  {
         cloudFeedback(contours.boundingRect(contourLengths[0][1]));
     }
 
