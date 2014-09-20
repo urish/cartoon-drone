@@ -12,7 +12,7 @@
 })();
 
 angular.module('droneUI', []).
-    controller('DroneClientCtrl', function ($scope, $http) {
+    controller('DroneClientCtrl', function ($scope, $http, $interval) {
         $scope.takeoff = function () {
             $http.get('/drone/takeoff');
         };
@@ -29,7 +29,17 @@ angular.module('droneUI', []).
             $http.get('/drone/clockwise');
         };
 
-        $scope.stars = function () {
-            $http.get('/drone/stars');
+        $scope.up = function () {
+            $http.get('/drone/up');
         };
+
+        $scope.cloud = function () {
+            $http.get('/drone/cloud');
+        };
+
+        $interval(function() {
+            $http.get('/drone/feedbackDirection').success(function(result) {
+                $scope.feedbackDirection = result;
+            });
+        }, 100);
     });

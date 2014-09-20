@@ -21,6 +21,7 @@ var upperThreshold = [90, 255, 255];
 
 var feedback = false;
 var feedbackWait = false;
+var feedbackDirection = '';
 
 openCV.on('data', function (matrix) {
     if (!ready) {
@@ -54,34 +55,70 @@ openCV.on('data', function (matrix) {
         matrix.rectangle([rect.x, rect.y], [rect.width, rect.height], colors[i], 3);
     }
     if (feedback && !feedbackWait) {
-        starsFeedback(contours.boundingRect(contourLengths[0][1]));
+        cloudFeedback(contours.boundingRect(contourLengths[0][1]));
     }
 
     matrix.save('web/processed.jpg');
 });
 
-function starsFeedback(rect) {
-    var feedbackSpeed = 0.02;
+function cloudFeedback(rect) {
     var centerX = rect.x + rect.width / 2;
     var centerY = rect.y + rect.height / 2;
+    var factor = 1.5;
     // 640x360
     var deltaX = 320 - centerX;
     var deltaY = 180 - centerY;
+    var errorX = Math.abs(deltaX / 180.0);
+    var errorY = Math.abs(deltaY / 180.0);
+    feedbackDirection = '';
+
     if (deltaY > 10) {
-        client.front(feedbackSpeed);
-    } else if (deltaY < -10) {
-        client.back(feedbackSpeed);
-    } else if (deltaX < -10) {
-        client.right(feedbackSpeed);
-    } else if (deltaX > 10) {
-        client.left(feedbackSpeed);
-    } else {
+        client.front(errorY/factor);
+        feedbackDirection = ' front';
+    }
+    if (deltaY < -10) {
+        client.back(errorY/factor);
+        feedbackDirection += ' back';
+    }
+
+    if (deltaX > 10) {
+        client.left(errorX/factor);
+        feedbackDirection += ' left';
+    }
+
+    if (deltaX < -10) {
+        client.right(errorX/factor);
+        feedbackDirection += ' right';
+    }
+
+//    if (errorY > errorX) {
+//        if (deltaY > 10) {
+//            client.front(feedbackSpeed);
+//            feedbackDirection = 'front';
+//        } else if (deltaY < -10)
+//        {
+//            client.back(feedbackSpeed);
+//            feedbackDirection = 'back';
+//        }
+//    } else {
+//        if (deltaX < -10) {
+//            client.right(feedbackSpeed);
+//            feedbackDirection = 'right';
+//        } else if (deltaX > 10) {
+//            client.left(feedbackSpeed);
+//            feedbackDirection = 'left';
+//        }
+//    }
+
+    if (!feedbackDirection) {
         client.stop();
     }
+
     feedbackWait = true;
     setTimeout(function () {
         feedbackWait = false;
-    }, 1000);
+        client.stop();
+    }, 100);
 }
 
 app.get('/drone/takeoff', function (req, res) {
@@ -90,6 +127,7 @@ app.get('/drone/takeoff', function (req, res) {
 });
 
 app.get('/drone/land', function (req, res) {
+    feedback = false;
     client.land();
     res.end();
 });
@@ -105,9 +143,18 @@ app.get('/drone/clockwise', function (req, res) {
     res.end();
 });
 
-app.get('/drone/stars', function (req, res) {
+app.get('/drone/up', function (req, res) {
+    client.up(0.5);
+    res.end();
+});
+
+app.get('/drone/cloud', function (req, res) {
     feedback = true;
     res.end();
+});
+
+app.get('/drone/feedbackDirection', function (req, res) {
+    res.send(feedbackDirection);
 });
 
 client.createRepl();
