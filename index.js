@@ -142,7 +142,7 @@ function startSquare() {
     var directions = ['right', 'front', 'left', 'back'];
     squareInterval = setInterval(function () {
         var direction = directions[index % directions.length];
-        client[direction].apply(client, 0.5);
+        client[direction].call(client, 0.5);
         index++;
     }, 1000);
 }
@@ -165,27 +165,52 @@ app.get('/drone/clockwise', function (req, res) {
 });
 
 app.get('/drone/up', function (req, res) {
+
+
+
+
+
     client.up(0.5);
     res.end();
 });
 
+app.get('/drone/down', function (req, res) {
+    client.down(1);
+    setTimeout(function() {
+        client.stop();
+    }, 200);
+    res.end();
+});
+
 app.get('/drone/left', function (req, res) {
-    client.left(0.2);
+    client.left(1);
+    setTimeout(function() {
+        client.stop();
+    }, 200);
     res.end();
 });
 
 app.get('/drone/right', function (req, res) {
-    client.right(0.2);
+    client.right(1);
+    setTimeout(function() {
+        client.stop();
+    }, 200);
     res.end();
 });
 
 app.get('/drone/front', function (req, res) {
-    client.front(0.2);
+    client.front(1);
+    setTimeout(function() {
+        client.stop();
+    }, 200);
     res.end();
 });
 
 app.get('/drone/back', function (req, res) {
-    client.back(0.2);
+    client.back(1);
+    setTimeout(function() {
+        client.stop();
+    }, 200);
     res.end();
 });
 
